@@ -1,12 +1,17 @@
 from captcha.fields import ReCaptchaField
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import MyUser
+from .models import MyUser, Profile
+
+""" Form for LogIn """
 
 
 class LoginForm(forms.Form):
     username = forms.CharField(label='Username')
     password = forms.CharField(label='Password', widget=forms.PasswordInput)
+
+
+""" Form for Registration """
 
 
 class RegistrationForm(UserCreationForm):
@@ -20,6 +25,7 @@ class RegistrationForm(UserCreationForm):
         model = MyUser
         fields = ['username', 'email', 'password1', 'password2', 'captcha']
 
+    """Checking for duplicate Email"""
     def clean_email(self):
         email = self.cleaned_data['email']
         if MyUser.objects.filter(email=email).exists():
@@ -27,3 +33,10 @@ class RegistrationForm(UserCreationForm):
         return email
 
 
+""" Form for Profile of the User """
+
+
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ['photo', 'name', 'telegram', 'email', 'additional_info']
